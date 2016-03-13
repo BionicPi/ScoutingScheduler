@@ -125,17 +125,14 @@ public class Scheduler
 		public Team(int teamNumber)
 		{
 			number = teamNumber;
+			matches = new ArrayList<Match>();
 		}
 		
 		void filterMatches()
 		{
 			for(Match m: matchList)
-				if(m != null && m.teams.contains(this))
+				if(m.teams.contains(this))
 					matches.add(m);
-			System.out.println(matches);
-//			for(Match m:matchList)
-//				if(m.teams.contains(this))
-//					matches.add(m);
 		}
 		
 		public int getTeamNumber()
@@ -196,12 +193,7 @@ public class Scheduler
 	}
 	
 	public void parseMatchList(String list)
-	{
-//		ArrayList<String> parsed = new ArrayList<String>();
-		
-//		for(int i = 0; i < list.length(); i = list.indexOf(" ", i) + 1)
-//			parsed.add(list.substring(i, list.indexOf(" ", i)));
-		
+	{		
 		for(int i = 0; i < list.length();)
 		{
 			int number = Integer.parseInt(list.substring(i, list.indexOf(" ", i)));
@@ -226,10 +218,6 @@ public class Scheduler
 			for(Team t: m.teams)
 				if(!teamList.contains(t))
 					teamList.add(t);
-		
-		System.out.println(teamList);
-//		sortTeamList();
-//		System.out.println(teamList);
 		
 		for(Team t: teamList)
 			t.filterMatches();
@@ -263,14 +251,19 @@ public class Scheduler
 			if(!(temp.size() > 0))
 				temp.add(teamList.get(i));
 			else
-				for(int j = 0; i < temp.size();)
+				for(int j = 0; j < temp.size();)
 					if(temp.get(j).getTeamNumber() > teamList.get(i).getTeamNumber())
 					{
 						temp.add(j, teamList.get(i));
-						i = temp.size();
+						j = temp.size();
 					}
+					else if(j < temp.size() - 1)
+						j++;
 					else
-						i++;
+					{
+						temp.add(teamList.get(i));
+						j = temp.size();
+					}
 		
 		teamList = temp;
 	}
@@ -283,13 +276,13 @@ public class Scheduler
 		
 		VAHAY.parseMatchList("1 539 6236 5549 619 2068 612 2 888 614 3274 3373 5587 1123 3 2186 5338 2363 1719 5243 2911 4 4472 4505 4242 6189 3872 611 ");
 		VAHAY.sortMatchList();
-//		VAHAY.sortTeamList();
+		VAHAY.sortTeamList();
 		
 		for(Team t: VAHAY.teamList)
 		{
 			System.out.println(t.getTeamNumber());
-//			for(Match m: t.matches)
-//				System.out.println(m.getMatchNumber());
+			for(Match m: t.matches)
+				System.out.println(m.getMatchNumber());
 		}
 	}
 }
