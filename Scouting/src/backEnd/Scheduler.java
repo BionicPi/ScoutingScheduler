@@ -7,29 +7,13 @@ public class Scheduler
 	
 	public ArrayList<Match> matchList;
 	public ArrayList<Scouter> scouters;
-	public ArrayList<Team> teams;
+	public ArrayList<Team> teamList;
 	
 	public Scheduler()
 	{
 		matchList = new ArrayList<Match>();
 		scouters = new ArrayList<Scouter>();
-		teams = new ArrayList<Team>();
-	}
-	
-	public void test()
-	{
-		teams.add(new Team(234));
-		
-//		Team 234 ;//= new Team(234);
-//		Team 435= new Team(435);
-//		Team 1225= new Team(1225);
-//		Team 1501= new Team(1501);
-//		Team 1533= new Team(1533);
-//		Team 2640= new Team(2640);
-//		Team 2642= new Team(2642);
-		//Team 2655= new Team(2655),Team 2682= new Team(2682),Team 3196= new Team(3196),Team 3215= new Team(3215),Team 3331= new Team(3331),Team 3336= new Team(3336),Team 3402= new Team(3402),Team 3506= new Team(3506),Team 3680= new Team(3680),Team 3822= new Team(3822),Team 3845= new Team(3845),Team 3971= new Team(3971),Team 4290= new Team(4290),Team 4561= new Team(4561),Team 4767= new Team(4767),Team 4829= new Team(4829),Team 4935= new Team(4935),Team 5188= new Team(5188),Team 5511= new Team(5511),Team 5679= new Team(5679),Team 5727= new Team(5727);
-//		public Team 5854 = new Team(5854);
-//		public Team 6004= new Team(6004);
+		teamList = new ArrayList<Team>();
 	}
 
 	
@@ -64,6 +48,11 @@ public class Scheduler
 		{
 			return number;
 		}
+		
+		public String toString()
+		{
+			return number + " " + blue1 + " " + blue2 + " " + blue3 + " " + red1 + " " + red2 + " " + red3 + " ";
+		}
 	}
 	
 	private class Scouter
@@ -86,6 +75,46 @@ public class Scheduler
 					if(m.teams.contains(t))
 						matches.add(m);
 		}
+		
+		void sortMatches()
+		{
+			ArrayList<Match> temp = new ArrayList<Match>();
+			
+			for(int i = 0; i < matches.size(); i++)
+				if(!(temp.size() > 0))
+					temp.add(matches.get(i));
+				else
+					for(int j = 0; i < temp.size();)
+						if(temp.get(j).getMatchNumber() > matches.get(i).getMatchNumber())
+						{
+							temp.add(j, matches.get(i));
+							i = temp.size();
+						}
+						else
+							i++;
+			
+			matches = temp;
+		}
+		
+		void sortTeams()
+		{
+			ArrayList<Team> temp = new ArrayList<Team>();
+			
+			for(int i = 0; i < teams.size(); i++)
+				if(!(temp.size() > 0))
+					temp.add(teams.get(i));
+				else
+					for(int j = 0; i < temp.size();)
+						if(temp.get(j).getTeamNumber() > teams.get(i).getTeamNumber())
+						{
+							temp.add(j, teams.get(i));
+							i = temp.size();
+						}
+						else
+							i++;
+			
+			teams = temp;
+		}
 	}
 	
 	public class Team
@@ -100,33 +129,167 @@ public class Scheduler
 		
 		void filterMatches()
 		{
-			for(Match m:matchList)
-				if(m.teams.contains(this))
+			for(Match m: matchList)
+				if(m != null && m.teams.contains(this))
 					matches.add(m);
+			System.out.println(matches);
+//			for(Match m:matchList)
+//				if(m.teams.contains(this))
+//					matches.add(m);
 		}
 		
 		public int getTeamNumber()
 		{
 			return number;
 		}
+		
+		void sortMatches()
+		{
+			ArrayList<Match> temp = new ArrayList<Match>();
+			
+			for(int i = 0; i < matches.size(); i++)
+				if(!(temp.size() > 0))
+					temp.add(matches.get(i));
+				else
+					for(int j = 0; i < temp.size();)
+						if(temp.get(j).getMatchNumber() > matches.get(i).getMatchNumber())
+						{
+							temp.add(j, matches.get(i));
+							i = temp.size();
+						}
+						else
+							i++;
+			
+			matches = temp;
+		}
+		
+		public String toString()
+		{
+			return number + "";
+		}
 	}
 	
-	public static void coincidence()
+	public void coincidence()
 	{
 		boolean intersect = false;
 		
-		for(int i = 0; i < teams.size() - 1; i++)
-			for(int j = i + 1; j<teams.size(); j++)
+		for(int i = 0; i < teamList.size() - 1; i++)
+			for(int j = i + 1; j<teamList.size(); j++)
 			{
-				for(Match m: teams.get(i).matches)
-					if(teams.get(j).matches.contains(m))
+				for(Match m: teamList.get(i).matches)
+					if(teamList.get(j).matches.contains(m))
 						intersect = true;
 				if(!intersect)
-					System.out.println(teams.get(i).getTeamNumber() + " " + teams.get(j).getTeamNumber());
+					System.out.println(teamList.get(i).getTeamNumber() + " " + teamList.get(j).getTeamNumber());
 			}				
 	}
 	
+	public void parseTeamList(String list)
+	{
+		ArrayList<String> parsed = new ArrayList<String>();
+		
+		for(int i = 0; i < list.length(); i = list.indexOf(" ", i) + 1)
+			parsed.add(list.substring(i, list.indexOf(" ", i)));
+		
+		for(String s: parsed)
+			teamList.add(new Team(Integer.parseInt(s)));
+	}
+	
+	public void parseMatchList(String list)
+	{
+//		ArrayList<String> parsed = new ArrayList<String>();
+		
+//		for(int i = 0; i < list.length(); i = list.indexOf(" ", i) + 1)
+//			parsed.add(list.substring(i, list.indexOf(" ", i)));
+		
+		for(int i = 0; i < list.length();)
+		{
+			int number = Integer.parseInt(list.substring(i, list.indexOf(" ", i)));
+			i = list.indexOf(" ", i) + 1;
+			Team b1 = new Team(Integer.parseInt(list.substring(i, list.indexOf(" ", i))));
+			i = list.indexOf(" ", i) + 1;
+			Team b2 = new Team(Integer.parseInt(list.substring(i, list.indexOf(" ", i))));
+			i = list.indexOf(" ", i) + 1;
+			Team b3 = new Team(Integer.parseInt(list.substring(i, list.indexOf(" ", i))));
+			i = list.indexOf(" ", i) + 1;
+			Team r1 = new Team(Integer.parseInt(list.substring(i, list.indexOf(" ", i))));
+			i = list.indexOf(" ", i) + 1;
+			Team r2 = new Team(Integer.parseInt(list.substring(i, list.indexOf(" ", i))));
+			i = list.indexOf(" ", i) + 1;
+			Team r3 = new Team(Integer.parseInt(list.substring(i, list.indexOf(" ", i))));
+			i = list.indexOf(" ", i) + 1;
+			
+			matchList.add(new Match(number, b1, b2, b3, r1, r2, r3));
+		}
+		
+		for(Match m: matchList)
+			for(Team t: m.teams)
+				if(!teamList.contains(t))
+					teamList.add(t);
+		
+		System.out.println(teamList);
+//		sortTeamList();
+//		System.out.println(teamList);
+		
+		for(Team t: teamList)
+			t.filterMatches();
+	}
+	
+	void sortMatchList()
+	{
+		ArrayList<Match> temp = new ArrayList<Match>();
+		
+		for(int i = 0; i < matchList.size(); i++)
+			if(!(temp.size() > 0))
+				temp.add(matchList.get(i));
+			else
+				for(int j = 0; i < temp.size();)
+					if(temp.get(j).getMatchNumber() > matchList.get(i).getMatchNumber())
+					{
+						temp.add(j, matchList.get(i));
+						i = temp.size();
+					}
+					else
+						i++;
+		
+		matchList = temp;
+	}
+	
+	void sortTeamList()
+	{
+		ArrayList<Team> temp = new ArrayList<Team>();
+		
+		for(int i = 0; i < teamList.size(); i++)
+			if(!(temp.size() > 0))
+				temp.add(teamList.get(i));
+			else
+				for(int j = 0; i < temp.size();)
+					if(temp.get(j).getTeamNumber() > teamList.get(i).getTeamNumber())
+					{
+						temp.add(j, teamList.get(i));
+						i = temp.size();
+					}
+					else
+						i++;
+		
+		teamList = temp;
+	}
+	
+	
+	
 	public static void main(String [] args)
 	{
-			}
+		Scheduler VAHAY = new Scheduler();
+		
+		VAHAY.parseMatchList("1 539 6236 5549 619 2068 612 2 888 614 3274 3373 5587 1123 3 2186 5338 2363 1719 5243 2911 4 4472 4505 4242 6189 3872 611 ");
+		VAHAY.sortMatchList();
+//		VAHAY.sortTeamList();
+		
+		for(Team t: VAHAY.teamList)
+		{
+			System.out.println(t.getTeamNumber());
+//			for(Match m: t.matches)
+//				System.out.println(m.getMatchNumber());
+		}
+	}
 }
