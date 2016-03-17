@@ -16,19 +16,23 @@ public class Scheduler
 	public ArrayList<Match> matchList;
 	public ArrayList<Scouter> scouters;
 	public ArrayList<Team> teamList;
+	public ArrayList<Integer> teamNumbers;
 	
 	public Scheduler()
 	{
 		matchList = new ArrayList<Match>();
 		scouters = new ArrayList<Scouter>();
 		teamList = new ArrayList<Team>();
+		teamNumbers = new ArrayList<Integer>();
 	}
 
 	
 	private class Match
 	{
 		public Team blue1, blue2, blue3, red1, red2, red3;
+		public int blueInt1, blueInt2, blueInt3, redInt1, redInt2, redInt3;
 		public ArrayList<Team> teams;
+		public ArrayList<Integer> numbers;
 		private int number;
 		
 		public Match(int matchNumber, Team b1, Team b2, Team b3, Team r1, Team r2, Team r3)
@@ -42,6 +46,14 @@ public class Scheduler
 			red2 = r2;
 			red3 = r3;
 			
+			blueInt1 = blue1.getTeamNumber();
+			blueInt2 = blue2.getTeamNumber();
+			blueInt3 = blue3.getTeamNumber();
+			redInt1 = red1.getTeamNumber();
+			redInt2 = red2.getTeamNumber();
+			redInt3 = red3.getTeamNumber();
+
+			
 			teams = new ArrayList<Team>();
 			teams.add(blue1);
 			teams.add(blue2);
@@ -49,12 +61,54 @@ public class Scheduler
 			teams.add(red1);
 			teams.add(red2);
 			teams.add(red3);
+			
+			numbers = new ArrayList<Integer>();
+			numbers.add(blueInt1);
+			numbers.add(blueInt2);
+			numbers.add(blueInt3);
+			numbers.add(redInt1);
+			numbers.add(redInt2);
+			numbers.add(redInt3);
+		}
+		
+		public Match(int matchNumber, int bi1, int bi2, int bi3, int ri1, int ri2, int ri3)
+		{
+			number = matchNumber;
+			
+			blueInt1 = bi1;
+			blueInt2 = bi2;
+			blueInt3 = bi3;
+			redInt1 = ri1;
+			redInt2 = ri2;
+			redInt3 = ri3;
+			
+			numbers = new ArrayList<Integer>();
+			numbers.add(blueInt1);
+			numbers.add(blueInt2);
+			numbers.add(blueInt3);
+			numbers.add(redInt1);
+			numbers.add(redInt2);
+			numbers.add(redInt3);
 		}
 		
 		
 		public int getMatchNumber() 
 		{
 			return number;
+		}
+		
+		public void getTeamsFromNumbers()
+		{
+			teams = new ArrayList<Team>();
+			for(int i: numbers)
+			{
+				Team t = new Team(-1);
+				for(Team tl: teamList)
+					if(tl.getTeamNumber() == i)
+						t=tl;
+				if(t.getTeamNumber() != -1)
+					teams.add(t);
+			}
 		}
 		
 		public String toString()
@@ -80,8 +134,7 @@ public class Scheduler
 		{
 			this.sortTeams();
 			for(Team t: teams)
-				for(Match m: matchList)
-					if(m.teams.contains(t))
+				for(Match m: t.matches)
 						matches.add(m);
 			this.sortMatches();
 		}
@@ -136,11 +189,14 @@ public class Scheduler
 			teams = temp;
 		}
 
-		public String getMatchNumbers() 
+		public String toString() 
 		{
-			String s = "";
+			String s = name + "\nMatches: ";
 			for(Match m: matches)
 				s += m.getMatchNumber() + " ";
+			s += "\nTeams: ";
+			for(Team t: teams)
+				s += t.getTeamNumber() + " ";
 			return s;
 		}
 	}
@@ -227,17 +283,17 @@ public class Scheduler
 		list = list.replaceAll(ls, ",");
 		for(int i = 0; i < list.length();)
 		{
-			Team b1 = new Team(Integer.parseInt(list.substring(i, list.indexOf(",", i))));
+			int b1 = Integer.parseInt(list.substring(i, list.indexOf(",", i)));
 			i = list.indexOf(",", i) + 1;
-			Team b2 = new Team(Integer.parseInt(list.substring(i, list.indexOf(",", i))));
+			int b2 = Integer.parseInt(list.substring(i, list.indexOf(",", i)));
 			i = list.indexOf(",", i) + 1;
-			Team b3 = new Team(Integer.parseInt(list.substring(i, list.indexOf(",", i))));
+			int b3 = Integer.parseInt(list.substring(i, list.indexOf(",", i)));
 			i = list.indexOf(",", i) + 1;
-			Team r1 = new Team(Integer.parseInt(list.substring(i, list.indexOf(",", i))));
+			int r1 = Integer.parseInt(list.substring(i, list.indexOf(",", i)));
 			i = list.indexOf(",", i) + 1;
-			Team r2 = new Team(Integer.parseInt(list.substring(i, list.indexOf(",", i))));
+			int r2 = Integer.parseInt(list.substring(i, list.indexOf(",", i)));
 			i = list.indexOf(",", i) + 1;
-			Team r3 = new Team(Integer.parseInt(list.substring(i, list.indexOf(",", i))));
+			int r3 = Integer.parseInt(list.substring(i, list.indexOf(",", i)));
 			i = list.indexOf(",", i) + 1;
 			
 //			System.out.println(b1.getTeamNumber() + " " + b2.getTeamNumber() + " " + b3.getTeamNumber() + " " + r1.getTeamNumber() + " " + r2.getTeamNumber() + " " + r3.getTeamNumber() + "");
@@ -248,9 +304,15 @@ public class Scheduler
 		}
 		
 		for(Match m: matchList)
-			for(Team t: m.teams)
-				if(!teamList.contains(t))
-					teamList.add(t);
+			for(int t: m.numbers)
+				if(!teamNumbers.contains(t))
+					teamNumbers.add(t);
+		
+		for(int i: teamNumbers)
+			teamList.add(new Team(i));
+		
+		for(Match m: matchList)
+			m.getTeamsFromNumbers();
 		
 		for(Team t: teamList)
 			t.filterMatches();
@@ -310,6 +372,13 @@ public class Scheduler
 					}
 		
 		teamList = temp;
+		
+		for(int i = 0; i < teamList.size() - 1; i ++)
+			for(int j = i+1; j < teamList.size();)
+				if(teamList.get(i).getTeamNumber() == teamList.get(j).getTeamNumber())
+					teamList.remove(j);
+				else
+					j++;
 	}
 	
 	public void addScouter(String s)
@@ -347,7 +416,7 @@ public class Scheduler
 			VAHAY.sortTeamList();
 //			System.out.println(VAHAY.matchList);
 			
-			VAHAY.coincidence();
+			//VAHAY.coincidence();
 			
 			VAHAY.addScouter("Megan/Alex");
 			VAHAY.addScouter("Emily");
@@ -367,17 +436,24 @@ public class Scheduler
 
 			for(int j = 0; j < VAHAY.teamList.size(); j++)
 				if(VAHAY.teamList.get(j).getTeamNumber() != 1111)
-					VAHAY.scouters.get(j%VAHAY.scouters.size()).teams.add(VAHAY.teamList.get(j));
+				{
+					System.out.println(VAHAY.teamList.get(j).getTeamNumber());
+					VAHAY.scouters.get(j % VAHAY.scouters.size()).teams.add(VAHAY.teamList.get(j));
+				}
 			
-
+			for(Scouter s: VAHAY.scouters)
+				System.out.println(s.teams.size() + " " + s.matches.size());
 			
 			for(Scouter s: VAHAY.scouters)
 				s.filterMatches();
-
-			VAHAY.clearScouterOverlap();
 			
 			for(Scouter s: VAHAY.scouters)
-				System.out.println(s.name + ls + s.getMatchNumbers());
+				System.out.println(s.teams.size() + " " + s.matches.size());
+
+			//VAHAY.clearScouterOverlap();
+			
+			for(Scouter s: VAHAY.scouters)
+				System.out.println(s);
 
 //			for(Team t: VAHAY.teamList)
 //			{
