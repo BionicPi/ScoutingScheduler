@@ -198,19 +198,16 @@ public class Scheduler
 
 		public String toString() 
 		{
-			String s = name + "\nMatches: ";
+			String s = name + "\nTeams: " + teams + "\n";
+			s +="\nMatches: \n";
 			for(Match m: matches)
-				s += m.getMatchNumber() + " ";
-			s += "\nTeams: ";
-			for(Team t: teams)
 			{
-				s += t.getTeamNumber() + " Matches: ";
-				for(Match m: t.matches)
-					s += m.getMatchNumber() + " ";
+				s += m.getMatchNumber() + " ";
+				for(Team t: m.teams)
+					if(this.teams.contains(t))
+						s += t.getTeamNumber() + " ";
 				s += "\n";
 			}
-			
-			s += "\n";
 			
 			return s;
 		}
@@ -435,20 +432,20 @@ public class Scheduler
 			
 //			System.out.println(VAHAY.teamList + "\n" + VAHAY.matchList + "\n" + VAHAY.teamList.size());
 			
-			VAHAY.addScouter("Megan/Alex");
-			VAHAY.addScouter("Emily");
-			VAHAY.addScouter("Alyssa");
-			VAHAY.addScouter("Katie");
-			VAHAY.addScouter("Maddie");
-			VAHAY.addScouter("Ramona");
-			VAHAY.addScouter("John");
-			VAHAY.addScouter("Sean");
-			VAHAY.addScouter("Brendan");
-			VAHAY.addScouter("Celia");
+			VAHAY.addScouter("Brendan/Alyssa");
+			VAHAY.addScouter("Clay/Celia");
+			VAHAY.addScouter("Ramona/Katie");
+			VAHAY.addScouter("Kelly/John");
 			VAHAY.addScouter("Daniel/Ricardo");
-			VAHAY.addScouter("Braidan/Max");
+			VAHAY.addScouter("Sean/Shannon");
 			VAHAY.addScouter("Mary/Marielle");
+			VAHAY.addScouter("Braidan/Max");
 			VAHAY.addScouter("Hannah/Brittany");
+			VAHAY.addScouter("Zoe/Emily");
+			VAHAY.addScouter("Trent/Alex");
+			VAHAY.addScouter("Cori/Meghan");
+			VAHAY.addScouter("Rane/FOH");
+			VAHAY.addScouter("Ellie/Medeline");
 			
 
 			for(int j = 0; j < VAHAY.teamList.size(); j++)
@@ -465,7 +462,7 @@ public class Scheduler
 //				System.out.println(s.teams.size() + " " + s.matches.size());
 
 			//VAHAY.clearScouterOverlap();
-			
+			System.out.println(VAHAY.teamList);
 			for(Scouter s: VAHAY.scouters)
 				System.out.println(s);
 
