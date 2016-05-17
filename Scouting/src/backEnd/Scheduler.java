@@ -27,7 +27,7 @@ public class Scheduler
 	}
 
 	
-	private class Match
+	public class Match
 	{
 		public Team blue1, blue2, blue3, red1, red2, red3;
 		public int blueInt1, blueInt2, blueInt3, redInt1, redInt2, redInt3;
@@ -124,7 +124,7 @@ public class Scheduler
 		}
 	}
 	
-	private class Scouter
+	public class Scouter
 	{
 		public ArrayList<Match> matches;
 		public ArrayList<Team> teams;
@@ -137,7 +137,7 @@ public class Scheduler
 			teams = new ArrayList<Team>();
 		}
 		
-		void filterMatches()
+		public void filterMatches()
 		{
 			this.sortTeams();
 			for(Team t: teams)
@@ -361,7 +361,7 @@ public class Scheduler
 //		matchList = temp;
 //	}
 	
-	void sortTeamList()
+	public void sortTeamList()
 	{
 		ArrayList<Team> temp = new ArrayList<Team>();
 		
