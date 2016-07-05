@@ -73,6 +73,7 @@ public class ScoutingSchedulerGUI {
 				try
 				{
 					scheduler = new Scheduler();
+					tabbedPaneScoutingSchedule = new JTabbedPane(JTabbedPane.TOP);
 					
 					String s = textAreaScouters.getText();
 					s = s.trim() + "\n";
