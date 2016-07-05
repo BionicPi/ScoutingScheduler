@@ -72,6 +72,8 @@ public class ScoutingSchedulerGUI {
 			{
 				try
 				{
+					scheduler = new Scheduler();
+					
 					String s = textAreaScouters.getText();
 					s = s.trim() + "\n";
 					for(int i = 0; i < s.length(); i = s.indexOf("\n", i) + 1)
