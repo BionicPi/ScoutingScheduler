@@ -1,16 +1,14 @@
 package backEnd;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class Scheduler 
 {
 	
-	final static String ls = System.getProperty("line.separator");
+	public static final String ls = System.getProperty("line.separator");
 
 	
 	public ArrayList<Match> matchList;
@@ -146,7 +144,7 @@ public class Scheduler
 			this.sortMatches();
 		}
 		
-		void sortMatches()
+		public void sortMatches()
 		{
 			ArrayList<Match> temp = new ArrayList<Match>();
 			
@@ -171,12 +169,12 @@ public class Scheduler
 			matches = temp;
 		}
 		
-		void sortTeams()
+		public void sortTeams()
 		{
 			ArrayList<Team> temp = new ArrayList<Team>();
 			
 			for(int i = 0; i < teams.size(); i++)
-				if(!(temp.size() > 0))
+				if(temp.size() <= 0)
 					temp.add(teams.get(i));
 				else
 					for(int j = 0; j < temp.size();)
@@ -224,7 +222,7 @@ public class Scheduler
 			matches = new ArrayList<Match>();
 		}
 		
-		void filterMatches()
+		public void filterMatches()
 		{
 			for(Match m: matchList)
 				if(m.teams.contains(this))
@@ -264,7 +262,7 @@ public class Scheduler
 	
 	public void coincidence()
 	{
-		boolean intersect = false;
+		private boolean intersect = false;
 		
 		for(Team t: teamList)
 			for(Match m: t.matches)
@@ -288,11 +286,11 @@ public class Scheduler
 			teamList.add(new Team(Integer.parseInt(s)));
 	}
 	
-	public void parseMatchList(String list)
+	public void parseMatchList(String matchList)
 	{		
 		int j = 0;
 //		System.out.println(list.replaceAll(ls, ","));
-		list = list.replaceAll(ls, ",");
+		String list = matchList.replaceAll(ls, ",");
 		for(int i = 0; i < list.length();)
 		{
 			int b1 = Integer.parseInt(list.substring(i, list.indexOf(",", i)));
